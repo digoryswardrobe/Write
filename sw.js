@@ -2,7 +2,7 @@
    Strategy: try the network first (so updates you upload show up),
    and fall back to the saved copy when you're offline. */
 
-var CACHE = "writing-timers-v2";
+var CACHE = "writing-timers-v4";
 var FILES = [
   "./",
   "./index.html",
@@ -20,10 +20,7 @@ var FILES = [
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
-      // sky.jpg is optional, so a missing one must not break installation.
-      return cache.addAll(FILES).then(function () {
-        return cache.add("./sky.jpg").catch(function () {});
-      });
+      return cache.addAll(FILES);
     }).then(function () { return self.skipWaiting(); })
   );
 });

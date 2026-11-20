@@ -1,6 +1,6 @@
 # Writing Timers
 
-A small, calm timer app for writing. Tap **Begin**, tap an activity, and the timer starts. That's all.
+A small, calm timer app for writing, styled like a notebook page. Open it, tap an activity, and the timer starts. That's all.
 
 - **Morning Page** – 10 minutes
 - **Practice** – 1 hour
@@ -19,7 +19,7 @@ It works offline and opens full-screen once you add it to your phone's home scre
 | `app.js` | How the timers, sounds and settings work |
 | `manifest.webmanifest` | Lets your phone install it like an app |
 | `sw.js` | Makes it work offline |
-| `icon.svg`, `icon-*.png`, `apple-touch-icon.png` | The app icon (fountain pen nib) in all the sizes phones need |
+| `icon.svg`, `icon-*.png`, `apple-touch-icon.png` | The app icon (fountain pen nib, black on white) in all the sizes phones need |
 | `README.md` | This guide |
 
 You don't need to edit any of these.
@@ -83,13 +83,14 @@ Open it once while online; after that it works offline too.
 
 ## Using it
 
-- **Begin** shows your three activities. Tap one and the timer starts straight away, with a single wooden click.
+- The app opens straight onto your three timers. Tap one and it starts at once, with a single wooden click.
 - An encouraging word appears large for about 5 seconds, then settles to a small line at the bottom. (Tap it to move it out of the way sooner.)
 - **Pause / Resume** – stops and continues the countdown. Reminders wait while paused.
 - **Reset** – sets the timer back to its full length and leaves it paused. Tap **Start** when you're ready.
 - **Stop** – ends the timer and goes back to the list.
+- **Back arrow** (top left) – returns to all your timers while the timer keeps running. Its card shows the time left; tap it to go back to the timer. Starting a different timer while one is running asks before stopping the first.
 - **Sounds:** one soft knock 2 minutes before the end; three slow knocks when time is up.
-- **Draft break:** halfway through, two slow knocks and a banner: *"Time for a 15-minute break"*. The timer keeps running — tap **Pause** when you take your break, and the banner goes away.
+- **Draft break:** halfway through, two slow knocks and a yellow sticky note: *"Time for a 15-minute break"*. The timer keeps running — tap **Pause** when you take your break, and the note goes away.
 - The screen stays on while a timer is running (on phones that support it).
 - If the app gets closed by accident, it picks the timer back up where it should be when you reopen it.
 
@@ -102,10 +103,7 @@ Change each activity's length, edit/add/remove the encouraging messages, turn th
 
 - **Keep the app open and on screen while timing.** Phones pause web apps when the screen locks or you switch to another app, so sounds can't play then. The time itself always stays correct — when you come back, the countdown catches up, and if time ran out you'll see "Time's up".
 - **Sound on iPhone:** turn the volume up. On recent iPhones the app plays even with the silent switch on; on older ones, flip the silent switch off.
-- **Sound needs one tap first** — any tap (like **Begin**) wakes up the sound.
-
-### Optional: your own sky photo
-Upload a photo named exactly **`sky.jpg`** to the repository (next to `index.html`) and the app will use it as the background instead of the drawn sky. Keep the top third fairly plain so the yellow "Good morning!" stays readable.
+- **Sound needs one tap first** — any tap (like choosing a timer) wakes up the sound.
 
 ### Updating the app later
 Upload the changed file(s) the same way (**Add file → Upload files**, then **Commit changes**). GitHub takes a minute or two to publish. On your phone, close the app fully and open it again (sometimes twice) to get the new version.

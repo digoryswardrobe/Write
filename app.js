@@ -210,8 +210,8 @@
   /* ======================================================
      Screens
      ====================================================== */
-  var currentScreen = "home";
-  var screenBeforeSettings = "home";
+  var currentScreen = "list";
+  var screenBeforeSettings = "list";
 
   function show(name) {
     var next = $("screen-" + name);
@@ -221,6 +221,22 @@
     next.classList.add("active");
     requestAnimationFrame(function () { requestAnimationFrame(function () { next.classList.add("shown"); }); });
     currentScreen = name;
+    if (name === "list") setToday();
+    updateBreakNote();
+  }
+
+  // The sticky-note break reminder shows on the list and the timer screen.
+  function updateBreakNote() {
+    $("break-banner").hidden = !(session && session.breakBanner &&
+      (currentScreen === "timer" || currentScreen === "list"));
+    $("break-banner").classList.toggle("at-bottom", currentScreen === "list");
+  }
+
+  function setToday() {
+    try {
+      $("today").textContent = new Date().toLocaleDateString(undefined,
+        { weekday: "long", day: "numeric", month: "long" });
+    } catch (e) { $("today").textContent = ""; }
   }
 
   /* ======================================================
@@ -231,13 +247,37 @@
     wrap.innerHTML = "";
     ACTIVITIES.forEach(function (a) {
       var b = document.createElement("button");
-      b.className = "btn activity";
+      b.className = "activity";
+      b.setAttribute("data-id", a.id);
       b.innerHTML = '<span class="activity-name"></span><span class="activity-time"></span>';
       b.querySelector(".activity-name").textContent = a.name;
       b.querySelector(".activity-time").textContent = formatDurationLabel(settings.durations[a.id]);
-      b.addEventListener("click", function () { startActivity(a); });
+      b.addEventListener("click", function () { chooseActivity(a); });
       wrap.appendChild(b);
     });
+    updateRunningCard();
+  }
+
+  // While a timer is going, its card shows the time left; tapping it returns to the timer.
+  function updateRunningCard() {
+    document.querySelectorAll(".activity").forEach(function (card) {
+      var a = ACTIVITIES.filter(function (x) { return x.id === card.getAttribute("data-id"); })[0];
+      var isCurrent = !!(session && session.id === a.id);
+      card.classList.toggle("running", isCurrent);
+      var label = card.querySelector(".activity-time");
+      if (isCurrent) {
+        var state = session.running ? "In progress" : "Paused";
+        label.textContent = state + " · " + formatClock(remainingMs());
+      } else {
+        label.textContent = formatDurationLabel(settings.durations[a.id]);
+      }
+    });
+  }
+
+  function chooseActivity(a) {
+    if (session && session.id === a.id) { showTimerScreen(false); return; }
+    if (session && !window.confirm("Stop " + session.name + " and start " + a.name + "?")) return;
+    startActivity(a);
   }
 
   /* ======================================================
@@ -363,7 +403,8 @@
     var fresh = !session.running && session.remaining >= session.duration;
     $("btn-pause").textContent = session.running ? "Pause" : (fresh ? "Start" : "Resume");
     $("timer-state").textContent = session.running ? "" : (fresh ? "Ready" : "Paused");
-    $("break-banner").hidden = !session.breakBanner;
+    updateBreakNote();
+    updateRunningCard();
     document.title = (session.running ? text + " · " : "") + "Writing Timers";
   }
 
@@ -408,6 +449,8 @@
     session = null;
     store(SESSION_KEY, null);
     document.title = "Writing Timers";
+    updateRunningCard();
+    updateBreakNote();
   }
 
   function finish(playSound) {
@@ -423,9 +466,21 @@
   $("btn-stop").addEventListener("click", stopTimer);
   $("btn-done").addEventListener("click", function () { show("list"); });
 
+  // Back arrow: return to all the timers. The timer keeps running.
+  $("btn-back").addEventListener("click", function () {
+    if ($("message-big").classList.contains("visible")) settleMessage();
+    show("list");
+  });
+
+  // Tapping the sticky note opens the timer, where Pause is.
+  $("break-banner").addEventListener("click", function () {
+    if (session && currentScreen !== "timer") showTimerScreen(false);
+  });
+
   // When the app comes back to the front, catch up straight away
   // and ask for the wake lock again (browsers drop it when hidden).
   document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && currentScreen === "list") setToday();
     if (document.visibilityState === "visible" && session) {
       if (session.running) { ensureAudio(); keepScreenOn(); }
       tick();
@@ -539,7 +594,7 @@
   });
 
   function openSettings() {
-    screenBeforeSettings = currentScreen === "settings" ? "home" : currentScreen;
+    screenBeforeSettings = currentScreen === "settings" ? "list" : currentScreen;
     // Tidy away blank messages left over from last time.
     settings.messages = settings.messages.filter(function (m) { return m.trim(); });
     saveSettings();
@@ -560,18 +615,6 @@
   /* ======================================================
      Navigation & start-up
      ====================================================== */
-  $("btn-begin").addEventListener("click", function () { show("list"); });
-  document.querySelectorAll("[data-go]").forEach(function (b) {
-    b.addEventListener("click", function () { show(b.getAttribute("data-go")); });
-  });
-
-  // Use sky.jpg as the background if one has been added to the project.
-  (function () {
-    var img = new Image();
-    img.onload = function () { document.documentElement.classList.add("has-photo"); };
-    img.src = "sky.jpg";
-  })();
-
   renderActivities();
 
   // If the app was closed mid-timer, pick up where it left off.
@@ -586,7 +629,7 @@
       startTicking();
     }
   } else {
-    show("home");
+    show("list");
   }
 
   // Offline support.

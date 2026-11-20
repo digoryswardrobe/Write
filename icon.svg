@@ -1,28 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6495ED"/>
-      <stop offset="0.38" stop-color="#9FC2F2"/>
-      <stop offset="0.62" stop-color="#D3E3F4"/>
-      <stop offset="0.82" stop-color="#F8D6BE"/>
-      <stop offset="1" stop-color="#FFF2E0"/>
-    </linearGradient>
     <mask id="cut">
       <rect width="512" height="512" fill="#fff"/>
-      <!-- breather hole and slit -->
+      <!-- breather hole, slit and collar line show the white background through -->
       <circle cx="256" cy="246" r="24" fill="#000"/>
-      <rect x="249" y="262" width="14" height="190" fill="#000"/>
+      <rect x="249" y="262" width="14" height="210" fill="#000"/>
+      <rect x="186" y="146" width="140" height="12" fill="#000"/>
     </mask>
   </defs>
-  <rect width="512" height="512" fill="url(#sky)"/>
-  <!-- soft shadow under the nib -->
-  <path transform="translate(0 10)" opacity="0.22" fill="#1F2E57"
-        d="M256 452 C228 392 168 318 166 254 C164 210 186 180 198 158 L198 96 L314 96 L314 158 C326 180 348 210 346 254 C344 318 284 392 256 452 Z"/>
+  <rect width="512" height="512" fill="#FFFFFF"/>
   <!-- nib -->
-  <g mask="url(#cut)">
-    <path fill="#FFD23F" stroke="#C98A12" stroke-width="10" stroke-linejoin="round"
-          d="M256 452 C228 392 168 318 166 254 C164 210 186 180 198 158 L198 96 L314 96 L314 158 C326 180 348 210 346 254 C344 318 284 392 256 452 Z"/>
-    <!-- collar line -->
-    <rect x="198" y="146" width="116" height="12" fill="#C98A12"/>
-  </g>
+  <path mask="url(#cut)" fill="#111111" stroke="#111111" stroke-width="10" stroke-linejoin="round"
+        d="M256 452 C228 392 168 318 166 254 C164 210 186 180 198 158 L198 96 L314 96 L314 158 C326 180 348 210 346 254 C344 318 284 392 256 452 Z"/>
 </svg>
