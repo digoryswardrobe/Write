@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Writing Timers</title>
+  <meta name="description" content="Gentle one-tap timers for writing.">
+  <meta name="theme-color" content="#6495ED">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Writing Timers">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+
+  <!-- HOME -->
+  <section id="screen-home" class="screen active" aria-label="Home">
+    <button class="gear" data-open-settings aria-label="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gear-shape"/></svg>
+    </button>
+    <div class="home-inner">
+      <svg class="greeting" viewBox="0 0 360 170" role="img" aria-label="Good morning!">
+        <defs>
+          <path id="arc" d="M 14 150 Q 180 36 346 150" fill="none"/>
+        </defs>
+        <text><textPath href="#arc" startOffset="50%" text-anchor="middle">Good morning!</textPath></text>
+      </svg>
+      <button id="btn-begin" class="btn btn-primary btn-begin">Begin</button>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="screen-list" class="screen" aria-label="Activities">
+    <button class="back" data-go="home" aria-label="Back to home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>
+    </button>
+    <button class="gear" data-open-settings aria-label="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gear-shape"/></svg>
+    </button>
+    <div class="list-inner">
+      <h1 class="list-title">What are you writing?</h1>
+      <div id="activity-buttons" class="activity-buttons"></div>
+    </div>
+  </section>
+
+  <!-- TIMER -->
+  <section id="screen-timer" class="screen" aria-label="Timer">
+    <div id="break-banner" class="break-banner" role="alert" hidden>Time for a 15-minute break</div>
+    <div class="timer-inner">
+      <h1 id="timer-name" class="timer-name">Morning Page</h1>
+      <div id="timer-count" class="timer-count" aria-live="off">10:00</div>
+      <div id="timer-state" class="timer-state"></div>
+      <div class="timer-buttons">
+        <button id="btn-pause" class="btn btn-primary">Pause</button>
+        <div class="timer-buttons-row">
+          <button id="btn-reset" class="btn">Reset</button>
+          <button id="btn-stop" class="btn">Stop</button>
+        </div>
+      </div>
+    </div>
+    <div id="message-big" class="message-big" aria-live="polite"></div>
+    <div id="message-small" class="message-small"></div>
+  </section>
+
+  <!-- TIME'S UP -->
+  <section id="screen-done" class="screen" aria-label="Time's up">
+    <div class="done-inner">
+      <h1 class="done-title">Time's up</h1>
+      <p id="done-sub" class="done-sub"></p>
+      <button id="btn-done" class="btn btn-primary btn-wide">Done</button>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="screen-settings" class="screen screen-settings" aria-label="Settings">
+    <header class="settings-header">
+      <button id="btn-settings-back" class="back back-inline" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>
+      </button>
+      <h1>Settings</h1>
+    </header>
+    <div class="settings-body">
+      <div class="card">
+        <h2>Durations</h2>
+        <div id="duration-rows"></div>
+      </div>
+
+      <div class="card">
+        <h2>Reminders</h2>
+        <label class="toggle-row">
+          <span>2-minute warning knock</span>
+          <input type="checkbox" id="set-warning" class="switch">
+        </label>
+        <label class="toggle-row">
+          <span>Draft break reminder (halfway)</span>
+          <input type="checkbox" id="set-break" class="switch">
+        </label>
+      </div>
+
+      <div class="card">
+        <h2>Encouraging messages</h2>
+        <div id="message-rows"></div>
+        <button id="btn-add-message" class="btn btn-small">+ Add message</button>
+      </div>
+
+      <div class="card">
+        <button id="btn-defaults" class="btn btn-small btn-quiet">Reset everything to defaults</button>
+      </div>
+      <p class="settings-note">Changes save automatically.</p>
+    </div>
+  </section>
+
+  <!-- shared gear shape -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="gear-shape" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.690-.98l-.38-2.65A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.49.49 0 0 0 .12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66a.49.49 0 0 0-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65a7.3 7.3 0 0 0 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.66Z"/></symbol>
+  </svg>
+
+  <script src="app.js"></script>
+</body>
+</html>
