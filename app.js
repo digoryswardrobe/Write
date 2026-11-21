@@ -22,7 +22,7 @@
   var SESSION_KEY = "writingTimers.session.v1";
 
   var WARNING_MS = 2 * 60 * 1000;
-  var BIG_MESSAGE_MS = 5000;
+  var BIG_MESSAGE_MS = 2000;
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
@@ -249,7 +249,7 @@
       var b = document.createElement("button");
       b.className = "activity";
       b.setAttribute("data-id", a.id);
-      b.innerHTML = '<span class="activity-name"></span><span class="activity-time"></span>';
+      b.innerHTML = '<span class="activity-note"></span><span class="activity-name"></span><span class="activity-time"></span>';
       b.querySelector(".activity-name").textContent = a.name;
       b.querySelector(".activity-time").textContent = formatDurationLabel(settings.durations[a.id]);
       b.addEventListener("click", function () { chooseActivity(a); });
@@ -266,8 +266,8 @@
       card.classList.toggle("running", isCurrent);
       var label = card.querySelector(".activity-time");
       if (isCurrent) {
-        var state = session.running ? "In progress" : "Paused";
-        label.textContent = state + " · " + formatClock(remainingMs());
+        card.querySelector(".activity-note").textContent = session.running ? "in progress" : "paused";
+        label.textContent = formatClock(remainingMs());
       } else {
         label.textContent = formatDurationLabel(settings.durations[a.id]);
       }
@@ -346,7 +346,7 @@
   function settleMessage() {
     clearTimeout(bigMessageTimer);
     $("message-big").classList.remove("visible");
-    setTimeout(function () { $("message-small").classList.add("visible"); }, 500);
+    setTimeout(function () { $("message-small").classList.add("visible"); }, 300);
   }
   $("message-big").addEventListener("click", settleMessage);
 
